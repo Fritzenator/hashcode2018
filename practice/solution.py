@@ -1,6 +1,6 @@
 def main():
-    with open("example.in") as input:
-        row_count, column_count, min_ingridient, max_area = tuple(
+    with open("a_example.in") as input:
+        row_count, column_count, vehicle_count, ride_count, bonus, steps_count = tuple(
             map(
                 int, input.readline().split(' ')
             )
