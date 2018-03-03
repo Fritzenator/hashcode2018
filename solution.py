@@ -65,7 +65,7 @@ def calculate_priority(simulation_step, BONUS, vehicle, ride):
 
     priority -= arrive_time
 
-    return priority
+    return priority, arrive_time
 
 
 def main():
@@ -99,33 +99,19 @@ def main():
                 if rides[ride]['completed']:
                     continue
 
-                priority = calculate_priority(simulation_step, BONUS, vehicle, rides[ride])
-                # time_in_way_to_client = math.fabs(
-                #         vehicle['current_y'] - rides[ride]['start_y']
-                #     ) + math.fabs(
-                #         vehicle['current_x'] - rides[ride]['start_x']
-                #     )
-                # arrive_time = simulation_step + time_in_way_to_client
+                priority, arrive_time = calculate_priority(simulation_step, BONUS, vehicle, rides[ride])
 
-                # priority = rides[ride]['distance']
-
-                # if arrive_time <= rides[ride]['start_time']:
-                #     arrive_time = rides[ride]['start_time']
-                #     priority += BONUS
-
-                # priority -= arrive_time
-
-                priorities[priority] = ride
+                priorities[priority] = (ride, arrive_time)
 
 
             selected_ride = max(priorities)
-            ride_assignments[vehicle['id']].append(priorities[selected_ride])
+            ride_assignments[vehicle['id']].append(priorities[selected_ride][0])
             vehicles[vehicle['id']]['is_occupied'] = True
-            #TODO: freeing time should be calculated as vehicle arrive time + ride distance
-            vehicles[vehicle['id']]['freeing_time'] = rides[priorities[selected_ride]]['start_time'] + rides[priorities[selected_ride]]['distance']
-            vehicles[vehicle['id']]['current_x'] = rides[priorities[selected_ride]]['end_x']
-            vehicles[vehicle['id']]['current_y'] = rides[priorities[selected_ride]]['end_y']
-            rides[ride]['completed'] = True
+            # freeing time should be calculated as vehicle arrive time + ride distance
+            vehicles[vehicle['id']]['freeing_time'] = priorities[selected_ride][1] + rides[priorities[selected_ride][0]]['distance']
+            vehicles[vehicle['id']]['current_x'] = rides[priorities[selected_ride][0]]['end_x']
+            vehicles[vehicle['id']]['current_y'] = rides[priorities[selected_ride][0]]['end_y']
+            rides[priorities[selected_ride][0]]['completed'] = True
 
     write(ride_assignments)
 
