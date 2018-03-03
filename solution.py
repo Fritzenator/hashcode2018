@@ -39,6 +39,35 @@ def read():
         return rides, row_count, column_count, vehicle_count, ride_count, bonus, steps_count
 
 
+def write(ride_assignments):
+    with open('output_data/a_example.out', 'w') as output:
+        for r in ride_assignments:
+            tmp = '{length} {rides}\n'.format(
+                length=len(ride_assignments[r]),
+                rides=' '.join(map(str, ride_assignments[r]))
+            )
+            output.write(tmp)
+
+
+def calculate_priority(simulation_step, BONUS, vehicle, ride):
+    time_in_way_to_client = math.fabs(
+                        vehicle['current_y'] - ride['start_y']
+                    ) + math.fabs(
+                        vehicle['current_x'] - ride['start_x']
+                    )
+    arrive_time = simulation_step + time_in_way_to_client
+
+    priority = ride['distance']
+
+    if arrive_time <= ride['start_time']:
+        arrive_time = ride['start_time']
+        priority += BONUS
+
+    priority -= arrive_time
+
+    return priority
+
+
 def main():
     rides, row_count, column_count, vehicle_count, ride_count, BONUS, steps_count = read()
 
@@ -69,20 +98,22 @@ def main():
             for ride in rides:
                 if rides[ride]['completed']:
                     continue
-                time_in_way_to_client = math.fabs(
-                        vehicle['current_y'] - rides[ride]['start_y']
-                    ) + math.fabs(
-                        vehicle['current_x'] - rides[ride]['start_x']
-                    )
-                arrive_time = simulation_step + time_in_way_to_client
 
-                priority = rides[ride]['distance']
+                priority = calculate_priority(simulation_step, BONUS, vehicle, rides[ride])
+                # time_in_way_to_client = math.fabs(
+                #         vehicle['current_y'] - rides[ride]['start_y']
+                #     ) + math.fabs(
+                #         vehicle['current_x'] - rides[ride]['start_x']
+                #     )
+                # arrive_time = simulation_step + time_in_way_to_client
 
-                if arrive_time <= rides[ride]['start_time']:
-                    arrive_time = rides[ride]['start_time']
-                    priority += BONUS
+                # priority = rides[ride]['distance']
 
-                priority -= arrive_time
+                # if arrive_time <= rides[ride]['start_time']:
+                #     arrive_time = rides[ride]['start_time']
+                #     priority += BONUS
+
+                # priority -= arrive_time
 
                 priorities[priority] = ride
 
@@ -95,14 +126,8 @@ def main():
             vehicles[vehicle['id']]['current_x'] = rides[priorities[selected_ride]]['end_x']
             vehicles[vehicle['id']]['current_y'] = rides[priorities[selected_ride]]['end_y']
             rides[ride]['completed'] = True
-    
-    with open('output_data/a_example.out', 'w') as output:
-        for r in ride_assignments:
-            tmp = '{length} {rides}\n'.format(
-                length=len(ride_assignments[r]),
-                rides=' '.join(map(str, ride_assignments[r]))
-            )
-            output.write(tmp)
+
+    write(ride_assignments)
 
 
 if __name__ == '__main__':
