@@ -1,7 +1,7 @@
 import math
 
 def read():
-    with open("a_example.in") as input:
+    with open("input_data/a_example.in") as input:
         row_count, column_count, vehicle_count, ride_count, bonus, steps_count = tuple(
             map(
                 int, input.readline().split(' ')
@@ -97,7 +97,7 @@ def main():
             vehicles[vehicle['id']]['current_y'] = rides[priorities[selected_ride]]['end_y']
             rides[ride]['completed'] = True
     
-    with open('a_example.out', 'w') as output:
+    with open('output_data/a_example.out', 'w') as output:
         for r in ride_assignments:
             tmp = '{length} {rides}\n'.format(
                 length=len(ride_assignments[r]),
@@ -105,13 +105,6 @@ def main():
             )
             output.write(tmp)
 
-            
-                
-
-                
-            
-
-    
 
 if __name__ == '__main__':
     main()
