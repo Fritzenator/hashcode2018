@@ -86,12 +86,11 @@ def main():
 
                 priorities[priority] = ride
 
-            # k = list(priorities.keys())
-            # k.sort(reverse=True)
 
-            selected_ride = max(priorities, key=priorities.get)
+            selected_ride = max(priorities)
             ride_assignments[vehicle['id']].append(priorities[selected_ride])
             vehicles[vehicle['id']]['is_occupied'] = True
+            #TODO: freeing time should be calculated as vehicle arrive time + ride distance
             vehicles[vehicle['id']]['freeing_time'] = rides[priorities[selected_ride]]['start_time'] + rides[priorities[selected_ride]]['distance']
             vehicles[vehicle['id']]['current_x'] = rides[priorities[selected_ride]]['end_x']
             vehicles[vehicle['id']]['current_y'] = rides[priorities[selected_ride]]['end_y']
