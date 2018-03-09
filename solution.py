@@ -1,7 +1,7 @@
 import math
 
-def read():
-    with open("input_data/a_example.in") as input:
+def read(input_dataset):
+    with open(input_dataset) as input:
         row_count, column_count, vehicle_count, ride_count, bonus, steps_count = tuple(
             map(
                 int, input.readline().split(' ')
@@ -39,8 +39,8 @@ def read():
         return rides, row_count, column_count, vehicle_count, ride_count, bonus, steps_count
 
 
-def write(ride_assignments):
-    with open('output_data/a_example.out', 'w') as output:
+def write(ride_assignments, output_file):
+    with open(output_file, 'w') as output:
         for r in ride_assignments:
             tmp = '{length} {rides}\n'.format(
                 length=len(ride_assignments[r]),
@@ -68,8 +68,8 @@ def calculate_priority(simulation_step, BONUS, vehicle, ride):
     return priority, arrive_time
 
 
-def main():
-    rides, row_count, column_count, vehicle_count, ride_count, BONUS, steps_count = read()
+def solve(input_dataset, output_file):
+    rides, row_count, column_count, vehicle_count, ride_count, BONUS, steps_count = read(input_dataset)
 
     vehicles = [{
         'id': v,
@@ -113,8 +113,8 @@ def main():
             vehicles[vehicle['id']]['current_y'] = rides[priorities[selected_ride][0]]['end_y']
             rides[priorities[selected_ride][0]]['completed'] = True
 
-    write(ride_assignments)
+    write(ride_assignments, output_file)
 
 
 if __name__ == '__main__':
-    main()
+    solve()
