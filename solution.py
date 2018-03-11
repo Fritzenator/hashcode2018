@@ -103,6 +103,8 @@ def solve(input_dataset, output_file):
 
                 priorities[priority] = (ride, arrive_time)
 
+            if len(priorities)==0:
+                break
 
             selected_ride = max(priorities)
             ride_assignments[vehicle['id']].append(priorities[selected_ride][0])
